@@ -1,0 +1,610 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API",
+        "description": "REST API description",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/token": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Generate auth token",
+                "operationId": "7d42533b4dbe1d123671fd4f3ff3257f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApiTokenStoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "title": "Token",
+                                            "type": "string",
+                                            "example": "3|9WRihby8o9sAJyyIZGa6ioePh9ts2WzfrJMnyzEB"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationFailedResponse"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BaseIncorrectRequestResponse"
+                    }
+                }
+            }
+        },
+        "/api/posts": {
+            "get": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Get all posts",
+                "operationId": "3fda362e2e082b5357ac416e7767e435",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PostResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "title": "Links",
+                                            "description": "Pagination links",
+                                            "properties": {
+                                                "first": {
+                                                    "title": "First",
+                                                    "description": "First page link",
+                                                    "type": "string",
+                                                    "example": "https://site.com/?page=1"
+                                                },
+                                                "last": {
+                                                    "title": "Last",
+                                                    "description": "Last page link",
+                                                    "type": "string",
+                                                    "example": "https://site.com/?page=3"
+                                                },
+                                                "prev": {
+                                                    "title": "Prev",
+                                                    "description": "Previous page link. Can be null if currenct link is first.",
+                                                    "type": "string",
+                                                    "example": "https://site.com/?page=1",
+                                                    "nullable": true
+                                                },
+                                                "next": {
+                                                    "title": "Next",
+                                                    "description": "Next page link. Can be null if currenct link is last.",
+                                                    "type": "string",
+                                                    "example": "https://site.com/?page=3",
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "title": "Meta",
+                                            "description": "Meta information",
+                                            "properties": {
+                                                "current_page": {
+                                                    "title": "Current Page",
+                                                    "description": "Current page number",
+                                                    "type": "integer",
+                                                    "example": "2"
+                                                },
+                                                "last_page": {
+                                                    "title": "Last Page",
+                                                    "description": "Last page number",
+                                                    "type": "integer",
+                                                    "example": "3"
+                                                },
+                                                "from": {
+                                                    "title": "From",
+                                                    "description": "First item on pahe number",
+                                                    "type": "integer",
+                                                    "example": "16"
+                                                },
+                                                "to": {
+                                                    "title": "To",
+                                                    "description": "Last item on pahe number",
+                                                    "type": "integer",
+                                                    "example": "30"
+                                                },
+                                                "total": {
+                                                    "title": "Total",
+                                                    "description": "Total items number",
+                                                    "type": "integer",
+                                                    "example": "45"
+                                                },
+                                                "per_page": {
+                                                    "title": "Per Page",
+                                                    "description": "Items per page number",
+                                                    "type": "integer",
+                                                    "example": "15"
+                                                },
+                                                "path": {
+                                                    "title": "Path",
+                                                    "description": "Base url path",
+                                                    "type": "string",
+                                                    "example": "https://site.com"
+                                                },
+                                                "links": {
+                                                    "title": "Links",
+                                                    "description": "Pagination pages links",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "url": {
+                                                                "title": "Url",
+                                                                "description": "Page url",
+                                                                "type": "string",
+                                                                "example": "https://site.com/?page=1"
+                                                            },
+                                                            "label": {
+                                                                "title": "Label",
+                                                                "description": "Pagination link label",
+                                                                "type": "string",
+                                                                "example": "Previous"
+                                                            },
+                                                            "active": {
+                                                                "title": "Active",
+                                                                "description": "Is the link is current",
+                                                                "type": "boolean",
+                                                                "example": "false"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/BaseNotFoundResponse"
+                    }
+                },
+                "security": [
+                    {
+                        "bearearAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Add post",
+                "operationId": "dcb66200c3132996151884ac232cf439",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostStoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "$ref": "#/components/schemas/PostResource"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/BaseResponseSchema"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationFailedResponse"
+                    }
+                },
+                "security": [
+                    {
+                        "bearearAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/posts/{post_id}": {
+            "get": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Get post",
+                "description": "Get current authed user",
+                "operationId": "82662f799bed4e5592b7e1ce88970f5b",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/PostIdInPath"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearearAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Update post",
+                "operationId": "ce2f5fa44eea916fc8fdb47c2c88aed4",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/PostIdInPath"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "$ref": "#/components/schemas/PostResource"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/BaseResponseSchema"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationFailedResponse"
+                    }
+                },
+                "security": [
+                    {
+                        "bearearAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Delete post",
+                "operationId": "aa7c64fba1cae36381e525046298a7ad",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/PostIdInPath"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/BaseResponse"
+                    }
+                },
+                "security": [
+                    {
+                        "bearearAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/account": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get current user's account",
+                "description": "Get current user's account",
+                "operationId": "19212f2965df511e15d6ba1202cae8d1",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearearAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "PostStoreRequest": {
+                "title": "Post store request",
+                "required": [
+                    "title",
+                    "text"
+                ],
+                "properties": {
+                    "title": {
+                        "title": "Post title",
+                        "type": "string",
+                        "example": "Post title example"
+                    },
+                    "text": {
+                        "title": "Text of post",
+                        "type": "string",
+                        "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                    }
+                },
+                "type": "object"
+            },
+            "PostUpdateRequest": {
+                "title": "Post update request",
+                "required": [
+                    "title",
+                    "text"
+                ],
+                "properties": {
+                    "title": {
+                        "title": "Post title",
+                        "type": "string",
+                        "example": "Post title example"
+                    },
+                    "text": {
+                        "title": "Text of post",
+                        "type": "string",
+                        "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                    }
+                },
+                "type": "object"
+            },
+            "ApiTokenStoreRequest": {
+                "title": "API token store request",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "title": "Email",
+                        "type": "string",
+                        "example": "user@email.com"
+                    },
+                    "password": {
+                        "title": "Password",
+                        "type": "string",
+                        "example": "password"
+                    }
+                },
+                "type": "object"
+            },
+            "PostResource": {
+                "title": "Post Resource",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "title": {
+                        "title": "Post title",
+                        "type": "string",
+                        "example": "Post title"
+                    },
+                    "text": {
+                        "title": "Post text",
+                        "type": "string",
+                        "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserResource"
+                    }
+                },
+                "type": "object"
+            },
+            "UserResource": {
+                "title": "User Resource",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "title": "Name",
+                        "type": "string",
+                        "example": "John"
+                    },
+                    "email": {
+                        "title": "Email",
+                        "type": "string",
+                        "example": "user@email.com"
+                    },
+                    "is_email_verified": {
+                        "title": "Is email verified",
+                        "type": "boolean",
+                        "example": "true"
+                    }
+                },
+                "type": "object"
+            },
+            "BaseResponseSchema": {
+                "title": "Base response",
+                "description": "Base response body",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Request status message",
+                        "type": "string",
+                        "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationFailedResponseSchema": {
+                "title": "Validation failed response",
+                "description": "Reponse body on validation failed",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The given data was invalid."
+                    },
+                    "erros": {
+                        "title": "Erros",
+                        "description": "Attributes errors.",
+                        "properties": {
+                            "first_property": {
+                                "title": "Frist property",
+                                "description": "Specific property errors",
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "Property is incorrect."
+                                }
+                            },
+                            "second_property": {
+                                "title": "Second property",
+                                "description": "Specific property errors",
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "Property is incorrect."
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "responses": {
+            "BaseResponse": {
+                "description": "Base response",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/BaseResponseSchema"
+                        }
+                    }
+                }
+            },
+            "BaseIncorrectRequestResponse": {
+                "description": "Incorrect request",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/BaseResponseSchema"
+                        }
+                    }
+                }
+            },
+            "BaseNotFoundResponse": {
+                "description": "Not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/BaseResponseSchema"
+                        }
+                    }
+                }
+            },
+            "ValidationFailedResponse": {
+                "description": "Validation errors",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ValidationFailedResponseSchema"
+                        }
+                    }
+                }
+            }
+        },
+        "parameters": {
+            "PostIdInPath": {
+                "name": "post_id",
+                "in": "path",
+                "description": "Post id",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearearAuth": {
+                "type": "http",
+                "in": "header",
+                "scheme": "bearer"
+            }
+        }
+    }
+}

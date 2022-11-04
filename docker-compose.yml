@@ -1,0 +1,56 @@
+version: "3.0"
+
+services:
+    app:
+        container_name: 'carmataxi-app'
+        user: '${USERID}:${USERGROUPID}'
+        build:
+            context: './.docker/app'
+            dockerfile: 'Dockerfile'
+            args:
+                USERID: '${USERID}'
+                USERNAME: '${USERNAME}'
+                USERGROUPID: '${USERGROUPID}'
+                USERGROUPNAME: '${USERGROUPNAME}'
+        volumes:
+            - './:/app'
+        depends_on:
+            - mysql
+        links:
+            - mysql
+        restart: on-failure
+
+    nginx:
+        container_name: 'carmataxi-nginx'
+        image: nginx
+        links:
+            - app
+        volumes:
+            - './:/app'
+            - './.docker/nginx/conf.d:/etc/nginx/conf.d'
+        ports:
+            - '${APP_PORT:-80}:80'
+        depends_on:
+            - app
+        restart: on-failure
+
+    mysql:
+        container_name: 'carmataxi-mysql'
+        image: mysql:8.0
+        ports:
+            - '${FORWARD_DB_PORT:-3306}:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+        volumes:
+            - 'carmataximysql:/var/lib/mysql'
+        healthcheck:
+            test: [ "CMD", "mysqladmin", "ping" ]
+        restart: on-failure
+volumes:
+    carmataximysql:
+        driver: local
+
